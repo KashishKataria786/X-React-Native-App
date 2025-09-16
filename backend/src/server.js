@@ -5,6 +5,7 @@ import { connectDatabse } from './config/db.js';
 import {clerkMiddleware} from '@clerk/express'
 import userRouter from './routes/user.route.js';
 import postRouter from './routes/post.route.js';
+import commentRouter from './routes/comment.route.js';
 
 
 const app = express();
@@ -15,8 +16,9 @@ app.use(clerkMiddleware());
 
 app.use('/api/users', userRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/comment',commentRouter);
 
-app.use((err,req,res,next)=>{
+app.use((err,req,res,next   )=>{
     console.error("Unhandled Error",err);
     res.status(500).json({
         error:err.message || "Internal Server Error"
