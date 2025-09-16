@@ -16,7 +16,7 @@ app.use(clerkMiddleware());
 app.use('/api/users', userRouter);
 app.use('/api/posts', postRouter);
 
-app.use((err,req,res)=>{
+app.use((err,req,res,next)=>{
     console.error("Unhandled Error",err);
     res.status(500).json({
         error:err.message || "Internal Server Error"
