@@ -30,7 +30,7 @@ app.use((err,req,res,next   )=>{
     })
 })
 
-if (ENV.NODE_ENV === 'production') {
+if (ENV.NODE_ENV !== 'production') {
   const startServer = async () => {
       await connectDatabse();
       app.listen(ENV.PORT, () => {
