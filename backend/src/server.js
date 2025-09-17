@@ -22,6 +22,7 @@ app.use('/api/posts', postRouter);
 app.use('/api/comment',commentRouter);
 app.use('/api/notification', notificationRouter);
 
+app.get("/", (req, res) => res.send("Hello from server"));
 app.use((err,req,res,next   )=>{
     console.error("Unhandled Error",err);
     res.status(500).json({
@@ -31,12 +32,9 @@ app.use((err,req,res,next   )=>{
 
 const startServer = async()=>{
     try {
-        await connectDatabse();
-   if(ENV.NODE_ENV==='production'){
-     app.listen(ENV.PORT,()=>{
-    console.log(`Server Started At ${ENV.PORT}`.bgBlue)
-})
-   }
+    await connectDatabse();
+   if(ENV.NODE_ENV==='production') app.listen(ENV.PORT,()=>{ console.log(`Server Started At ${ENV.PORT}`.bgBlue)})  
+
     } catch (error) {
         console.log("Failed to start Server",error.message);
         process.exit(1);
