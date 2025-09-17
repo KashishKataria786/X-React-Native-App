@@ -33,7 +33,7 @@ app.use((err,req,res,next   )=>{
 const startServer = async()=>{
     try {
     await connectDatabse();
-   if(ENV.NODE_ENV==='production') app.listen(ENV.PORT,()=>{ console.log(`Server Started At ${ENV.PORT}`.bgBlue)})  
+   if(ENV.NODE_ENV!=='production') app.listen(ENV.PORT,()=>{ console.log(`Server Started At ${ENV.PORT}`.bgBlue)})  
 
     } catch (error) {
         console.log("Failed to start Server",error.message);
