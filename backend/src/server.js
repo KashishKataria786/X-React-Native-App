@@ -30,18 +30,20 @@ app.use((err,req,res,next   )=>{
     })
 })
 
-const startServer = async()=>{
+if (ENV.NODE_ENV !== 'production') {
+  const startServer = async () => {
     try {
-    await connectDatabse();
-   if(ENV.NODE_ENV!=='production') app.listen(ENV.PORT,()=>{ console.log(`Server Started At ${ENV.PORT}`.bgBlue)})  
-
+      await connectDatabse();
+      app.listen(ENV.PORT, () => {
+        console.log(`Server started at ${ENV.PORT}`);
+      });
     } catch (error) {
-        console.log("Failed to start Server",error.message);
-        process.exit(1);
+      console.error('Failed to start server', error.message);
+      process.exit(1);
     }
+  };
+  startServer();
 }
-
-startServer();
 
 
 // Vercel only 
