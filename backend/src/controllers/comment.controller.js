@@ -1,19 +1,24 @@
-import { getAuth } from "@clerk/express";
 import asyncHandler from "express-async-handler";
+import { getAuth } from "@clerk/express";
+import Comment from "../models/comment.model.js";
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 import Notification from "../models/notification.model.js";
-import Comment from "../models/comment.model.js";
 
-export const getComment= asyncHandler(async(req,res)=>{
-    const {postId}= req.params;
-    const comments= await Comment.find({post:postId}).sort({created:-1}).populate("user", "username firstName lastName profilePicture");
+export const getComment = asyncHandler(async (req, res) => {
+  const { postId } = req.params;
+  
+  if (!postId || !postId.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(400).json({ error: "Valid post ID is required" });
+  }
 
-    return res.status(200).json({comments});
-})
+  const comments = await Comment.find({ post: postId })
+    .sort({ createdAt: -1 })
+    .limit(50) // Consider adding pagination
+    .populate("user", "username firstName lastName profilePicture");
 
-
-
+  res.status(200).json({ comments });
+});
 export const createComment = asyncHandler(async (req, res) => {
   const { userId } = getAuth(req);
   const { postId } = req.params;
@@ -34,11 +39,12 @@ export const createComment = asyncHandler(async (req, res) => {
     content,
   });
 
+  // link the comment to the post
   await Post.findByIdAndUpdate(postId, {
     $push: { comments: comment._id },
   });
 
-
+  // create notification if not commenting on own post
   if (post.user.toString() !== user._id.toString()) {
     await Notification.create({
       from: user._id,
@@ -67,12 +73,12 @@ export const deleteComment = asyncHandler(async (req, res) => {
     return res.status(403).json({ error: "You can only delete your own comments" });
   }
 
-  
+  // remove comment from post
   await Post.findByIdAndUpdate(comment.post, {
     $pull: { comments: commentId },
   });
 
-
+  // delete the comment
   await Comment.findByIdAndDelete(commentId);
 
   res.status(200).json({ message: "Comment deleted successfully" });

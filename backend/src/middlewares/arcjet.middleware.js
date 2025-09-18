@@ -27,16 +27,14 @@ export const arcjetMiddleware = async (req, res, next) => {
       }
     }
 
-    if (decision.results.some((result) => result.reason.isBot() && result.reason.isSpoofed())) {
-      return res.status(403).json({
-        error: "Spoofed bot detected",
-        message: "Malicious bot activity detected.",
-      });
-    }
 
     next();
   } catch (error) {
     console.error("Arcjet middleware error:", error);
-    next();
-  }
+    // Fail closed for security - deny access when protection service is unavailable
+    return res.status(503).json({
+      error: "Service Unavailable",
+      message: "Security service temporarily unavailable. Please try again later.",
+    });
+  }  
 };

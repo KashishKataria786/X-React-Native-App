@@ -2,7 +2,7 @@ import asyncHandler from 'express-async-handler'
 import Post from '../models/post.model.js'
 import User from '../models/user.model.js'
 import { clerkClient, getAuth } from "@clerk/express";
-import cloudinary from '../config/cloudinary.js     '
+import cloudinary from '../config/cloudinary.js'
 import Notification from '../models/notification.model.js'
 import Comment from '../models/comment.model.js'
 // Getting All Posts!
@@ -20,17 +20,21 @@ export const getPosts =asyncHandler (async(req,res)=>{
 
 
 // getting a single post
-export const getPost = asyncHandler(async(req,res)=>{
-    const {postId}= req.params;
-    const post = await Post.findById(postId)
-    .popuate("user", "username firstName lastName profilePicture")
+export const getPost = asyncHandler(async (req, res) => {
+  const { postId } = req.params;
+  const post = await Post.findById(postId)
+    .populate("user", "username firstName lastName profilePicture")
     .populate({
-        path:'comments',
-        select:"username firstName lastName profilePicture"
-    })
+      path: "comments",
+      populate: {
+        path: "user",
+        select: "username firstName lastName profilePicture"
+      }
+    });
 
-    if(!post)return res.status(404).json({error:"Post not Found"});
-    return res.status(200).json({post});
+  if (!post) return res.status(404).json({ error: "Post not Found" });
+
+  return res.status(200).json({ post });
 })
 
 export const getUserPosts = asyncHandler(async(req,res)=>{

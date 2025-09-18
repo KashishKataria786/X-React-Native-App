@@ -8,7 +8,7 @@ import commentRoutes from "./routes/comment.route.js";
 import notificationRoutes from "./routes/notification.route.js";
 
 import { ENV } from "./config/env.js";
-import { connectDatabse } from "./config/db.js";
+import { connectDatabase } from "./config/db.js";
 import {arcjetMiddleware} from './middlewares/arcjet.middleware.js'
 
 const app = express();
@@ -34,8 +34,7 @@ app.use((err, req, res, next) => {
 
 const startServer = async () => {
   try {
-    await connectDatabse();
-
+    await connectDatabase();
     // listen for local development
     if (ENV.NODE_ENV !== "production") {
       app.listen(ENV.PORT, () => console.log("Server is up and running on PORT:", ENV.PORT));

@@ -4,7 +4,7 @@ import { createComment, deleteComment, getComment } from '../controllers/comment
 
 const commentRouter = express.Router();
 
-commentRouter.post("/post/:postId", getComment);
-commentRouter.post('/post/:postId',Protectroute,createComment);
+commentRouter.get("/post/:postId", getComment);
+commentRouter.post('/post/:postId', Protectroute, createComment);
 commentRouter.delete('/:commentId', Protectroute,deleteComment);
 export default commentRouter;

@@ -3,7 +3,7 @@ import asyncHandler from "express-async-handler";
 import Notification from "../models/notification.model.js";
 import User from "../models/user.model.js";
 
-export const getNotificaton = asyncHandler(async (req, res) => {
+export const getNotification = asyncHandler(async (req, res) => {
   const { userId } = getAuth(req);
   const user = await User.findOne({ clerkId: userId });
   if (!user) return res.status(404).json({ errror: "User not Found" });
